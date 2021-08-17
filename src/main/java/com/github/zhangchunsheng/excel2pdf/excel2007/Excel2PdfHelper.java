@@ -16,6 +16,9 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.util.LocaleUtil;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 
 import java.text.SimpleDateFormat;
 
@@ -24,7 +27,7 @@ import java.text.SimpleDateFormat;
  */
 public class Excel2PdfHelper {
 
-    public static String getValue(HSSFCell cell) {
+    public static String getValue(XSSFCell cell) {
         CellType cellType = cell.getCellType();
         switch (cellType) {
             case BOOLEAN:
@@ -96,28 +99,28 @@ public class Excel2PdfHelper {
      * @param cell
      * @param pdfCell
      */
-    public static void transformBorder(HSSFCell cell, Cell pdfCell) {
-        HSSFCellStyle cellStyle = cell.getCellStyle();
+    public static void transformBorder(XSSFCell cell, Cell pdfCell) {
+        XSSFCellStyle cellStyle = cell.getCellStyle();
         BorderStyle borderBottom = cellStyle.getBorderBottom();
-        pdfCell.setBorderBottom(getBorder(borderBottom, cellStyle.getBottomBorderColor(), cell));
+        pdfCell.setBorderBottom(getBorder(borderBottom, cellStyle.getBottomBorderXSSFColor(), cell));
 
         BorderStyle borderLeft = cellStyle.getBorderLeft();
-        pdfCell.setBorderLeft(getBorder(borderLeft, cellStyle.getLeftBorderColor(), cell));
+        pdfCell.setBorderLeft(getBorder(borderLeft, cellStyle.getLeftBorderXSSFColor(), cell));
 
         BorderStyle borderRight = cellStyle.getBorderRight();
-        pdfCell.setBorderRight(getBorder(borderRight, cellStyle.getRightBorderColor(), cell));
+        pdfCell.setBorderRight(getBorder(borderRight, cellStyle.getRightBorderXSSFColor(), cell));
 
         BorderStyle borderTop = cellStyle.getBorderTop();
-        pdfCell.setBorderTop(getBorder(borderTop, cellStyle.getTopBorderColor(), cell));
+        pdfCell.setBorderTop(getBorder(borderTop, cellStyle.getTopBorderXSSFColor(), cell));
     }
 
-    public static Border getBorder(BorderStyle borderStyle, short colorIndex, HSSFCell cell) {
-        HSSFPalette customPalette = cell.getSheet().getWorkbook().getCustomPalette();
-        HSSFColor color = customPalette.getColor(colorIndex);
+    public static Border getBorder(BorderStyle borderStyle, XSSFColor xSSFColor, XSSFCell cell) {
         Color defaultColor = ColorConstants.BLACK;
-        if (color != null && color.getIndex() != 64) {
-            short[] triplet = color.getTriplet();
-            defaultColor = new DeviceRgb(triplet[0], triplet[1], triplet[2]);
+        if (xSSFColor != null) {
+            byte[] triplet = xSSFColor.getRGB();
+            if(triplet != null) {
+                defaultColor = new DeviceRgb(triplet[0], triplet[1], triplet[2]);
+            }
         }
         switch (borderStyle) {
             case THIN:

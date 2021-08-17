@@ -23,11 +23,22 @@ public class Simple1Tests {
     @Test
     public void test() throws IOException {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("sample1/case1.xls");
-        inputStream = this.getClass().getResourceAsStream("sample1/case1.xlsx");
+        inputStream = this.getClass().getResourceAsStream("sample1/case1.xls");
         String name = UUID.randomUUID().toString().substring(0, 10);
         name = "output1";
         FileOutputStream outputStream = new FileOutputStream(name + ".pdf");
         Excel2PDF excel2PDF = new Excel2PDF(inputStream, outputStream);
+        excel2PDF.convert();
+    }
+
+    @Test
+    public void testXlsx() throws IOException {
+        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("sample1/case1.xls");
+        inputStream = this.getClass().getResourceAsStream("sample1/case1.xlsx");
+        String name = UUID.randomUUID().toString().substring(0, 10);
+        name = "output1";
+        FileOutputStream outputStream = new FileOutputStream(name + ".pdf");
+        com.github.zhangchunsheng.excel2pdf.excel2007.Excel2PDF excel2PDF = new com.github.zhangchunsheng.excel2pdf.excel2007.Excel2PDF(inputStream, outputStream);
         excel2PDF.convert();
     }
 

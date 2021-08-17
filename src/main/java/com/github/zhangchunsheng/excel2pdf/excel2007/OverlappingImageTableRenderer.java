@@ -11,16 +11,19 @@ import com.itextpdf.layout.renderer.TableRenderer;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFPicture;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
  * @date 2021/8/17
  */
 public class OverlappingImageTableRenderer extends TableRenderer {
-    private HSSFPicture picture;
+    private XSSFPicture picture;
 
-    private HSSFSheet sheet;
+    private XSSFSheet sheet;
 
-    public OverlappingImageTableRenderer(Table modelElement, HSSFPicture picture, HSSFSheet sheet) {
+    public OverlappingImageTableRenderer(Table modelElement, XSSFPicture picture, XSSFSheet sheet) {
         super(modelElement);
         this.picture = picture;
         this.sheet = sheet;
@@ -30,7 +33,7 @@ public class OverlappingImageTableRenderer extends TableRenderer {
     public void drawChildren(DrawContext drawContext) {
         super.drawChildren(drawContext);
 
-        HSSFClientAnchor clientAnchor = picture.getClientAnchor();
+        XSSFClientAnchor clientAnchor = picture.getClientAnchor();
         // Use the coordinates of the cell in the fourth row and the second column to draw the image
         CellRenderer cellRenderer1 = rows.get(clientAnchor.getRow1())[clientAnchor.getCol1()];
         Rectangle rect1 = cellRenderer1.getOccupiedAreaBBox();
@@ -67,7 +70,7 @@ public class OverlappingImageTableRenderer extends TableRenderer {
         drawContext.getCanvas().addImage(imageData, width, 0, 0, height, x, y);
     }
 
-    private float getExcelHeight(HSSFSheet sheet) {
+    private float getExcelHeight(XSSFSheet sheet) {
         int physicalNumberOfRows = sheet.getPhysicalNumberOfRows();
         float result = 0;
         for (int i = 0; i < physicalNumberOfRows; i++) {
@@ -76,7 +79,7 @@ public class OverlappingImageTableRenderer extends TableRenderer {
         return result;
     }
 
-    private float getExcelWidth(HSSFSheet sheet) {
+    private float getExcelWidth(XSSFSheet sheet) {
         short lastCellNum = sheet.getRow(0).getLastCellNum();
         float result = 0;
         for (int i = 0; i < lastCellNum; i++) {

@@ -16,6 +16,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,9 +28,7 @@ import java.util.List;
  */
 public class Excel2PDF {
 
-    private HSSFSheet sheet;
-
-    private HSSFPalette customPalette;
+    private XSSFSheet sheet;
 
     private Document document;
 
@@ -42,9 +41,8 @@ public class Excel2PDF {
     private String fontPath;
 
     public Excel2PDF(InputStream inputStream) throws IOException {
-        HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+        XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
         this.sheet = workbook.getSheetAt(0);
-        this.customPalette = workbook.getCustomPalette();
     }
 
     public Excel2PDF(InputStream inputStream, OutputStream outputStream) throws IOException {
@@ -83,12 +81,12 @@ public class Excel2PDF {
      * @param table
      */
     private void doPicture(Table table) {
-        HSSFPatriarch drawingPatriarch = sheet.getDrawingPatriarch();
-        if(drawingPatriarch != null){
-            List<HSSFShape> children = drawingPatriarch.getChildren();
-            for (HSSFShape shape : children){
-                HSSFPicture hssfPicture = (HSSFPicture)shape;
-                table.setNextRenderer(new OverlappingImageTableRenderer(table, hssfPicture, sheet));
+        XSSFDrawing dp = (XSSFDrawing) sheet.createDrawingPatriarch();
+        if(dp != null){
+            List<XSSFShape> children = dp.getShapes();
+            for (XSSFShape shape : children){
+                XSSFPicture xssfPicture = (XSSFPicture)shape;
+                table.setNextRenderer(new OverlappingImageTableRenderer(table, xssfPicture, sheet));
             }
         }
     }
@@ -102,9 +100,9 @@ public class Excel2PDF {
     private void doRowAndCell(Table table) throws IOException {
         int lastRowNum = sheet.getLastRowNum();
         for (int i = 0; i < lastRowNum; i++) {
-            HSSFRow row = sheet.getRow(i);
+            XSSFRow row = sheet.getRow(i);
             for (int j = 0; j < lastCellNum; j++) {
-                HSSFCell cell = row.getCell(j);
+                XSSFCell cell = row.getCell(j);
                 if (cell != null) {
                     if (!isUse(cell)) {
                         CellRangeAddress cellRangeAddress = getCellRangeAddress(cell);
@@ -135,7 +133,7 @@ public class Excel2PDF {
      * @return
      * @throws IOException
      */
-    private Cell transformCommon(HSSFCell cell, int rowspan, int colspan) throws IOException {
+    private Cell transformCommon(XSSFCell cell, int rowspan, int colspan) throws IOException {
         String value = Excel2PdfHelper.getValue(cell);
 
         Cell pdfCell = new Cell(rowspan, colspan)
@@ -144,7 +142,7 @@ public class Excel2PDF {
         Text text = new Text(value);
         setPdfCellFont(cell, text);
         pdfCell.add(new Paragraph(text).setPadding(0f).setMargin(0f));
-        HSSFCellStyle cellStyle = cell.getCellStyle();
+        XSSFCellStyle cellStyle = cell.getCellStyle();
         // 布局
         VerticalAlignment verticalAlignment = cellStyle.getVerticalAlignment();
         pdfCell.setVerticalAlignment(Excel2PdfHelper.getVerticalAlignment(verticalAlignment));
@@ -155,11 +153,13 @@ public class Excel2PDF {
         Excel2PdfHelper.transformBorder(cell, pdfCell);
 
         //背景色
-        short colorIndex = cellStyle.getFillForegroundColor();
-        HSSFColor color = this.customPalette.getColor(colorIndex);
-        if (color.getIndex() != 64) {
-            short[] triplet = color.getTriplet();
-            pdfCell.setBackgroundColor(new DeviceRgb(triplet[0], triplet[1], triplet[2]));
+        XSSFColor xSSFColor = cellStyle.getFillBackgroundXSSFColor();
+
+        if (xSSFColor != null) {
+            byte[] triplet = xSSFColor.getRGB();
+            if(triplet != null) {
+                pdfCell.setBackgroundColor(new DeviceRgb(triplet[0], triplet[1], triplet[2]));
+            }
         }
         return pdfCell;
     }
@@ -171,10 +171,10 @@ public class Excel2PDF {
      * @param text
      * @throws IOException
      */
-    private void setPdfCellFont(HSSFCell cell, Text text) throws IOException {
-        HSSFCellStyle cellStyle = cell.getCellStyle();
+    private void setPdfCellFont(XSSFCell cell, Text text) throws IOException {
+        XSSFCellStyle cellStyle = cell.getCellStyle();
         //字体大小
-        HSSFFont font = cellStyle.getFont(cell.getSheet().getWorkbook());
+        XSSFFont font = cellStyle.getFont();
         short fontHeight = font.getFontHeight();
         if(this.fontPath != null && !this.fontPath.equals("")) {
             text.setFont(PdfFontFactory.createFont(this.fontPath, PdfEncodings.IDENTITY_H));
@@ -185,10 +185,12 @@ public class Excel2PDF {
         text.setFontSize(fontHeight * rate * 1.05f);
 
         //字体颜色
-        HSSFColor hssfColor = font.getHSSFColor(cell.getSheet().getWorkbook());
-        if (hssfColor != null && hssfColor.getIndex() != 64) {
-            short[] triplet = hssfColor.getTriplet();
-            text.setFontColor(new DeviceRgb(triplet[0], triplet[1], triplet[2]));
+        XSSFColor xssfColor = font.getXSSFColor();
+        if (xssfColor != null && xssfColor.getIndex() != 64) {
+            byte[] triplet = xssfColor.getRGB();
+            if(triplet != null) {
+                text.setFontColor(new DeviceRgb(triplet[0], triplet[1], triplet[2]));
+            }
         }
 
         //加粗
@@ -207,15 +209,15 @@ public class Excel2PDF {
         }
     }
 
-    private HSSFPicture getHSSFPicture(HSSFCell cell) {
-        HSSFPatriarch patriarch = sheet.getDrawingPatriarch();
-        if (patriarch != null) {
-            List<HSSFShape> children = patriarch.getChildren();
-            for (HSSFShape shape : children) {
-                HSSFPicture hssfPicture = (HSSFPicture) shape;
-                HSSFClientAnchor clientAnchor = hssfPicture.getClientAnchor();
+    private XSSFPicture getXSSFPicture(HSSFCell cell) {
+        XSSFDrawing dp = sheet.getDrawingPatriarch();
+        if (dp != null) {
+            List<XSSFShape> children = dp.getShapes();
+            for (XSSFShape shape : children) {
+                XSSFPicture xssfPicture = (XSSFPicture) shape;
+                XSSFClientAnchor clientAnchor = xssfPicture.getClientAnchor();
                 if (cell.getRowIndex() == clientAnchor.getRow1() && cell.getColumnIndex() == clientAnchor.getCol1()) {
-                    return hssfPicture;
+                    return xssfPicture;
                 }
             }
         }
@@ -267,7 +269,7 @@ public class Excel2PDF {
      * @param cell
      * @return
      */
-    private boolean isUse(HSSFCell cell) {
+    private boolean isUse(XSSFCell cell) {
         List<CellRangeAddress> mergedRegions = cell.getSheet().getMergedRegions();
         int rowIndex = cell.getRowIndex();
         int columnIndex = cell.getColumnIndex();
@@ -287,7 +289,7 @@ public class Excel2PDF {
      * @param cell
      * @return
      */
-    private CellRangeAddress getCellRangeAddress(HSSFCell cell) {
+    private CellRangeAddress getCellRangeAddress(XSSFCell cell) {
         List<CellRangeAddress> mergedRegions = cell.getSheet().getMergedRegions();
         int rowIndex = cell.getRowIndex();
         int columnIndex = cell.getColumnIndex();
