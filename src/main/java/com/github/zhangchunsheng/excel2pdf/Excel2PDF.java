@@ -1,5 +1,6 @@
 package com.github.zhangchunsheng.excel2pdf;
 
+import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -165,7 +166,8 @@ public class Excel2PDF {
         //字体大小
         HSSFFont font = cellStyle.getFont(cell.getSheet().getWorkbook());
         short fontHeight = font.getFontHeight();
-        text.setFont(PdfFontFactory.createFont("STSong-Light", "UniGB-UCS2-H", true));
+        // text.setFont(PdfFontFactory.createFont("STSong-Light", "UniGB-UCS2-H", true));
+        text.setFont(PdfFontFactory.createFont(System.getProperty("user.dir") + "/doc/font/SimHei.TTF", PdfEncodings.IDENTITY_H));
         text.setFontSize(fontHeight * rate * 1.05f);
 
         //字体颜色

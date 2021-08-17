@@ -24,6 +24,7 @@ public class Simple1Tests {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("sample1/case1.xls");
         inputStream = this.getClass().getResourceAsStream("sample1/case1.xls");
         String name = UUID.randomUUID().toString().substring(0, 10);
+        name = "output1";
         FileOutputStream outputStream = new FileOutputStream(name + ".pdf");
         Excel2PDF excel2PDF = new Excel2PDF(inputStream, outputStream);
         excel2PDF.convert();
