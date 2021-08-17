@@ -22,7 +22,7 @@ public class Simple1Tests {
     @Test
     public void test() throws IOException {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("sample1/case1.xls");
-        inputStream = this.getClass().getResourceAsStream("sample1/case1.xls");
+        inputStream = this.getClass().getResourceAsStream("sample1/case1.xlsx");
         String name = UUID.randomUUID().toString().substring(0, 10);
         name = "output1";
         FileOutputStream outputStream = new FileOutputStream(name + ".pdf");

@@ -24,7 +24,6 @@ import com.itextpdf.layout.renderer.TableRenderer;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.*;
@@ -36,8 +35,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.apache.poi.hssf.record.ExtendedFormatRecord.*;
 
 public class Excel2PdfTool {
     private static final HashMap<String, String> FONT_MAP = new HashMap<>();
