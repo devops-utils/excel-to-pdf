@@ -80,6 +80,9 @@ public class App {
                 int firstRow = sheet.getFirstRowNum();
                 int lastRow = sheet.getLastRowNum();
                 int numCols = getNumberOfColumns(sheet);
+                if(numCols == -1) {
+                    continue;
+                }
 
                 String printArea = workbook.getPrintArea(sheetNum);
                 if (printArea != null && printArea.contains("!")) {
