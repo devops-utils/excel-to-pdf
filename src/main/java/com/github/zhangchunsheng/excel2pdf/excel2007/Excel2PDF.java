@@ -153,7 +153,7 @@ public class Excel2PDF {
         Excel2PdfHelper.transformBorder(cell, pdfCell);
 
         //背景色
-        XSSFColor xSSFColor = cellStyle.getFillBackgroundXSSFColor();
+        XSSFColor xSSFColor = cellStyle.getFillBackgroundColorColor();
 
         if (xSSFColor != null) {
             byte[] rgb = xSSFColor.getRGB();
