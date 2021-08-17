@@ -1,5 +1,6 @@
 package com.github.zhangchunsheng.excel2pdf.excel2007;
 
+import com.github.zhangchunsheng.excel2pdf.IExcel2PDF;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * @date 2021/8/17
  */
-public class Excel2PDF {
+public class Excel2PDF implements IExcel2PDF {
 
     private XSSFSheet sheet;
 
