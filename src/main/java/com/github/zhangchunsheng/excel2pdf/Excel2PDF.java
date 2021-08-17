@@ -141,7 +141,7 @@ public class Excel2PDF {
 
         Cell pdfCell = new Cell(rowspan, colspan)
                 .setHeight(cell.getRow().getHeight() * this.rate * 1.2f)
-                .setPadding(0);
+                .setPadding(1);
         Text text = new Text(value);
         setPdfCellFont(cell, text);
         pdfCell.add(new Paragraph(text).setPadding(0f).setMargin(0f));
