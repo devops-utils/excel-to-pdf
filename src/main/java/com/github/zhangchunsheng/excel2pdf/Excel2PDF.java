@@ -40,6 +40,8 @@ public class Excel2PDF {
 
     private int lastCellNum;
 
+    private String fontPath;
+
     public Excel2PDF(InputStream inputStream) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
         this.sheet = workbook.getSheetAt(0);
@@ -52,6 +54,15 @@ public class Excel2PDF {
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
         this.lastCellNum = this.sheet.getRow(0).getLastCellNum();
+    }
+
+    public Excel2PDF(InputStream inputStream, OutputStream outputStream, String fontPath) throws IOException {
+        this(inputStream);
+        PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
+        this.document = new Document(pdfDocument, PageSize.A4.rotate());
+        this.rate = getRate();
+        this.lastCellNum = this.sheet.getRow(0).getLastCellNum();
+        this.fontPath = fontPath;
     }
 
     /**
@@ -166,8 +177,12 @@ public class Excel2PDF {
         //字体大小
         HSSFFont font = cellStyle.getFont(cell.getSheet().getWorkbook());
         short fontHeight = font.getFontHeight();
-        // text.setFont(PdfFontFactory.createFont("STSong-Light", "UniGB-UCS2-H", true));
-        text.setFont(PdfFontFactory.createFont(System.getProperty("user.dir") + "/doc/font/SimHei.TTF", PdfEncodings.IDENTITY_H));
+        if(this.fontPath != null && !this.fontPath.equals("")) {
+            text.setFont(PdfFontFactory.createFont(this.fontPath, PdfEncodings.IDENTITY_H));
+        } else {
+            text.setFont(PdfFontFactory.createFont(System.getProperty("user.dir") + "/doc/font/SimHei.TTF", PdfEncodings.IDENTITY_H));
+        }
+
         text.setFontSize(fontHeight * rate * 1.05f);
 
         //字体颜色
