@@ -10,7 +10,7 @@ public class Simple1Tests {
     public void testCase1OfSingle() throws IOException {
         URL url = this.getClass().getResource("sample1/case1.xls");
         url = this.getClass().getResource("sample1/case5.xlsx");
-        url = this.getClass().getResource("sample1/case2.xls");
+        url = this.getClass().getResource("sample1/case1.xlsx");
 
         System.out.println(url.getPath());
 
