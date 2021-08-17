@@ -1,4 +1,4 @@
-package com.github.zhangchunsheng.excel2pdf;
+package com.github.zhangchunsheng.excel2pdf.excel2003;
 
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;

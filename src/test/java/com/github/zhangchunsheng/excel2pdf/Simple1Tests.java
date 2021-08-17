@@ -1,5 +1,6 @@
 package com.github.zhangchunsheng.excel2pdf;
 
+import com.github.zhangchunsheng.excel2pdf.excel2003.Excel2PDF;
 import org.junit.Test;
 
 import java.io.*;
