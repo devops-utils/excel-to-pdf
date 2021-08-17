@@ -117,9 +117,9 @@ public class Excel2PdfHelper {
     public static Border getBorder(BorderStyle borderStyle, XSSFColor xSSFColor, XSSFCell cell) {
         Color defaultColor = ColorConstants.BLACK;
         if (xSSFColor != null) {
-            byte[] triplet = xSSFColor.getRGB();
-            if(triplet != null) {
-                defaultColor = new DeviceRgb(triplet[0], triplet[1], triplet[2]);
+            byte[] rgb = xSSFColor.getRGB();
+            if(rgb != null) {
+                defaultColor = new DeviceRgb(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2]));
             }
         }
         switch (borderStyle) {

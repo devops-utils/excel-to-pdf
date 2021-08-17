@@ -156,9 +156,9 @@ public class Excel2PDF {
         XSSFColor xSSFColor = cellStyle.getFillBackgroundXSSFColor();
 
         if (xSSFColor != null) {
-            byte[] triplet = xSSFColor.getRGB();
-            if(triplet != null) {
-                pdfCell.setBackgroundColor(new DeviceRgb(triplet[0], triplet[1], triplet[2]));
+            byte[] rgb = xSSFColor.getRGB();
+            if(rgb != null) {
+                pdfCell.setBackgroundColor(new DeviceRgb(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2])));
             }
         }
         return pdfCell;
@@ -187,9 +187,9 @@ public class Excel2PDF {
         //字体颜色
         XSSFColor xssfColor = font.getXSSFColor();
         if (xssfColor != null && xssfColor.getIndex() != 64) {
-            byte[] triplet = xssfColor.getRGB();
-            if(triplet != null) {
-                text.setFontColor(new DeviceRgb(triplet[0], triplet[1], triplet[2]));
+            byte[] rgb = xssfColor.getRGB();
+            if(rgb != null) {
+                text.setFontColor(new DeviceRgb(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2])));
             }
         }
 
