@@ -39,7 +39,7 @@ import java.util.Map;
 
 import static org.apache.poi.hssf.record.ExtendedFormatRecord.*;
 
-public class App {
+public class Excel2PdfTool {
     private static final HashMap<String, String> FONT_MAP = new HashMap<>();
     private static final DataFormatter DATA_FORMATTER = new DataFormatter();
 
