@@ -16,6 +16,8 @@ import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
+import java.util.Map;
+
 /**
  * <pre>
  * Created by Chunsheng Zhang on 2020/8/17.
@@ -24,16 +26,13 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
  * @author <a href="https://github.com/zhangchunsheng">Chunsheng Zhang</a>
  */
 public class OverlappingAnnotationTableRenderer extends TableRenderer {
-    private String value;
-
-    private Cell cell;
+    private Map<String, Cell> annotationsCellMap;
 
     private PdfDocument pdfDocument;
 
-    public OverlappingAnnotationTableRenderer(Table modelElement, String value, Cell cell, PdfDocument pdfDocument) {
+    public OverlappingAnnotationTableRenderer(Table modelElement, Map<String, Cell> annotationsCellMap, PdfDocument pdfDocument) {
         super(modelElement);
-        this.value = value;
-        this.cell = cell;
+        this.annotationsCellMap = annotationsCellMap;
         this.pdfDocument = pdfDocument;
     }
 
@@ -41,15 +40,17 @@ public class OverlappingAnnotationTableRenderer extends TableRenderer {
     public void drawChildren(DrawContext drawContext) {
         super.drawChildren(drawContext);
 
-        CellRenderer cellRenderer1 = rows.get(cell.getRow())[cell.getCol()];
-        Rectangle rect1 = cellRenderer1.getOccupiedAreaBBox();
+        for (Map.Entry<String, Cell> entry : annotationsCellMap.entrySet()) {
+            CellRenderer cellRenderer1 = rows.get(entry.getValue().getRow())[entry.getValue().getCol()];
+            Rectangle rect1 = cellRenderer1.getOccupiedAreaBBox();
 
-        this.doAnnotation(rect1.getX(), rect1.getY(), this.value);
+            this.doAnnotation(rect1.getX(), rect1.getY(), entry.getKey());
+        }
     }
 
     @Override
     public IRenderer getNextRenderer() {
-        return new OverlappingAnnotationTableRenderer((Table) modelElement, value, cell, pdfDocument);
+        return new OverlappingAnnotationTableRenderer((Table) modelElement, annotationsCellMap, pdfDocument);
     }
 
     private void doAnnotation(float x, float y, String value) {

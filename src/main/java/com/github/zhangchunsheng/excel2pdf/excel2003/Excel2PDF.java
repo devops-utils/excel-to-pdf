@@ -106,9 +106,7 @@ public class Excel2PDF implements IExcel2PDF {
     }
 
     private void doAnnotation(Table table) {
-        for (Map.Entry<String, Cell> entry : annotationsCellMap.entrySet()) {
-            table.setNextRenderer(new OverlappingAnnotationTableRenderer(table, entry.getKey(), entry.getValue(), pdfDocument));
-        }
+        table.setNextRenderer(new OverlappingAnnotationTableRenderer(table, annotationsCellMap, pdfDocument));
     }
 
     /**
