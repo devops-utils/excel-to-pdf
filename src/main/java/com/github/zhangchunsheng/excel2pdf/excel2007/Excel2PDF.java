@@ -175,7 +175,7 @@ public class Excel2PDF implements IExcel2PDF {
         //背景色
         XSSFColor xSSFColor = cellStyle.getFillForegroundXSSFColor();
         if (xSSFColor != null) {
-            byte[] rgb = xSSFColor.getRGB();
+            byte[] rgb = xSSFColor.getRGBWithTint();
             if(rgb != null) {
                 pdfCell.setBackgroundColor(new DeviceRgb(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2])));
             }
