@@ -50,7 +50,7 @@ public class Simple1Tests {
 
         System.out.println(url.getPath());
 
-        IExcel2PDF excel2PdfTool = EPFactory.getEP(url.getPath(), "output1.pdf");
+        IExcel2PDF excel2PdfTool = EPFactory.getEP(url.getPath(), "output1.pdf", System.getProperty("user.dir") + "/doc/font/SimHei.TTF");
         if(excel2PdfTool != null) {
             excel2PdfTool.convert();
         }

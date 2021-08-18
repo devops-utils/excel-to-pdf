@@ -4,7 +4,7 @@ excel-to-pdf
 
 ### 使用SDK
 ```java
-IExcel2PDF excel2PdfTool = EPFactory.getEP("case1.xls", "output1.pdf");
+IExcel2PDF excel2PdfTool = EPFactory.getEP(url.getPath(), "output1.pdf", System.getProperty("user.dir") + "/doc/font/SimHei.TTF");
 if(excel2PdfTool != null) {
     excel2PdfTool.convert();
 }
