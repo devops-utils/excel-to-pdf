@@ -158,26 +158,30 @@ public class Excel2PDF implements IExcel2PDF {
                 //.setHeight(cell.getRow().getHeight() * this.rate * 1.2f)
                 .setHeight(cell.getRow().getHeightInPoints() * 1.2f)
                 .setPadding(0);
-        Text text = new Text(value);
-        setPdfCellFont(cell, text);
-        Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
-        pdfCell.add(paragraph);
-        XSSFCellStyle cellStyle = cell.getCellStyle();
-        // 布局
-        VerticalAlignment verticalAlignment = cellStyle.getVerticalAlignment();
-        pdfCell.setVerticalAlignment(Excel2PdfHelper.getVerticalAlignment(verticalAlignment));
-        HorizontalAlignment alignment = cellStyle.getAlignment();
-        pdfCell.setTextAlignment(Excel2PdfHelper.getTextAlignment(alignment, cell.getCellType()));
+        if(value.startsWith("${")) {
+            pdfCell.setBorder(Border.NO_BORDER);
+        } else {
+            Text text = new Text(value);
+            setPdfCellFont(cell, text);
+            Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
+            pdfCell.add(paragraph);
+            XSSFCellStyle cellStyle = cell.getCellStyle();
+            // 布局
+            VerticalAlignment verticalAlignment = cellStyle.getVerticalAlignment();
+            pdfCell.setVerticalAlignment(Excel2PdfHelper.getVerticalAlignment(verticalAlignment));
+            HorizontalAlignment alignment = cellStyle.getAlignment();
+            pdfCell.setTextAlignment(Excel2PdfHelper.getTextAlignment(alignment, cell.getCellType()));
 
-        //边框
-        Excel2PdfHelper.transformBorder(cell, pdfCell);
+            //边框
+            Excel2PdfHelper.transformBorder(cell, pdfCell);
 
-        //背景色
-        XSSFColor xSSFColor = cellStyle.getFillForegroundXSSFColor();
-        if (xSSFColor != null) {
-            byte[] rgb = xSSFColor.getRGBWithTint();
-            if(rgb != null) {
-                pdfCell.setBackgroundColor(new DeviceRgb(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2])));
+            //背景色
+            XSSFColor xSSFColor = cellStyle.getFillForegroundXSSFColor();
+            if (xSSFColor != null) {
+                byte[] rgb = xSSFColor.getRGBWithTint();
+                if(rgb != null) {
+                    pdfCell.setBackgroundColor(new DeviceRgb(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2])));
+                }
             }
         }
         return pdfCell;

@@ -163,27 +163,31 @@ public class Excel2PDF implements IExcel2PDF {
                 //.setHeight(cell.getRow().getHeight() * this.rate * 1.2f)
                 .setHeight(cell.getRow().getHeightInPoints() * 1.2f)
                 .setPadding(0);
-        Text text = new Text(value);
-        setPdfCellFont(cell, text);
-        Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
-        pdfCell.add(paragraph);
-        HSSFCellStyle cellStyle = cell.getCellStyle();
-        // 布局
-        VerticalAlignment verticalAlignment = cellStyle.getVerticalAlignment();
-        pdfCell.setVerticalAlignment(Excel2PdfHelper.getVerticalAlignment(verticalAlignment));
-        HorizontalAlignment alignment = cellStyle.getAlignment();
-        pdfCell.setTextAlignment(Excel2PdfHelper.getTextAlignment(alignment, cell.getCellType()));
+        if(value.startsWith("${")) {
+            pdfCell.setBorder(Border.NO_BORDER);
+        } else {
+            Text text = new Text(value);
+            setPdfCellFont(cell, text);
+            Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
+            pdfCell.add(paragraph);
+            HSSFCellStyle cellStyle = cell.getCellStyle();
+            // 布局
+            VerticalAlignment verticalAlignment = cellStyle.getVerticalAlignment();
+            pdfCell.setVerticalAlignment(Excel2PdfHelper.getVerticalAlignment(verticalAlignment));
+            HorizontalAlignment alignment = cellStyle.getAlignment();
+            pdfCell.setTextAlignment(Excel2PdfHelper.getTextAlignment(alignment, cell.getCellType()));
 
-        //边框
-        Excel2PdfHelper.transformBorder(cell, pdfCell);
+            //边框
+            Excel2PdfHelper.transformBorder(cell, pdfCell);
 
-        //背景色
-        short colorIndex = cellStyle.getFillForegroundColor();
-        HSSFColor color = this.customPalette.getColor(colorIndex);
-        if (color.getIndex() != 64) {
-            short[] triplet = color.getTriplet();
-            DeviceRgb deviceRgb = new DeviceRgb(triplet[0] + 32, triplet[1] + 90, triplet[2] + 60);
-            pdfCell.setBackgroundColor(deviceRgb);
+            //背景色
+            short colorIndex = cellStyle.getFillForegroundColor();
+            HSSFColor color = this.customPalette.getColor(colorIndex);
+            if (color.getIndex() != 64) {
+                short[] triplet = color.getTriplet();
+                DeviceRgb deviceRgb = new DeviceRgb(triplet[0] + 32, triplet[1] + 90, triplet[2] + 60);
+                pdfCell.setBackgroundColor(deviceRgb);
+            }
         }
         return pdfCell;
     }
