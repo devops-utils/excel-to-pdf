@@ -42,6 +42,20 @@ public class Simple1Tests {
         excel2PDF.convert();
     }
 
+    @Test
+    public void testEP() throws IOException {
+        URL url = this.getClass().getResource("sample1/case1.xls");
+        url = this.getClass().getResource("sample1/case5.xlsx");
+        url = this.getClass().getResource("sample1/case1.xlsx");
+
+        System.out.println(url.getPath());
+
+        IExcel2PDF excel2PdfTool = EPFactory.getEP(url.getPath(), "output1.pdf");
+        if(excel2PdfTool != null) {
+            excel2PdfTool.convert();
+        }
+    }
+
     private File fileOut(String fileIn) {
         String uri = this.getClass().getResource(fileIn).getPath();
         String fileOut = uri.replaceAll(".xls$|.xlsx$",".pdf");
