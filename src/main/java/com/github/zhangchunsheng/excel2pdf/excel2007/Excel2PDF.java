@@ -1,6 +1,7 @@
 package com.github.zhangchunsheng.excel2pdf.excel2007;
 
 import com.github.zhangchunsheng.excel2pdf.IExcel2PDF;
+import com.github.zhangchunsheng.excel2pdf.excel2003.OverlappingAnnotationTableRenderer;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -23,7 +24,9 @@ import org.apache.poi.xssf.usermodel.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>
@@ -48,6 +51,8 @@ public class Excel2PDF implements IExcel2PDF {
 
     private String fontPath;
 
+    private Map<String, Cell> annotationsCellMap;
+
     public Excel2PDF(InputStream inputStream) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
         this.sheet = workbook.getSheetAt(0);
@@ -57,6 +62,7 @@ public class Excel2PDF implements IExcel2PDF {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
         this.pdfDocument = pdfDocument;
+        this.annotationsCellMap = new HashMap<>();
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
         this.lastCellNum = this.sheet.getRow(0).getLastCellNum();
@@ -66,6 +72,7 @@ public class Excel2PDF implements IExcel2PDF {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
         this.pdfDocument = pdfDocument;
+        this.annotationsCellMap = new HashMap<>();
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
         this.lastCellNum = this.sheet.getRow(0).getLastCellNum();
@@ -81,8 +88,13 @@ public class Excel2PDF implements IExcel2PDF {
         Table table = new Table(getColumnWidths());
         doRowAndCell(table);
         doPicture(table);
+        doAnnotation(table);
         document.add(table);
         document.close();
+    }
+
+    private void doAnnotation(Table table) {
+        table.setNextRenderer(new OverlappingAnnotationTableRenderer(table, annotationsCellMap, pdfDocument));
     }
 
     /**
@@ -164,6 +176,7 @@ public class Excel2PDF implements IExcel2PDF {
                 .setPadding(0);
         if (value.startsWith("${")) {
             pdfCell.setBorder(Border.NO_BORDER);
+            annotationsCellMap.put(value, pdfCell);
         } else {
             Text text = new Text(value);
             setPdfCellFont(cell, text);

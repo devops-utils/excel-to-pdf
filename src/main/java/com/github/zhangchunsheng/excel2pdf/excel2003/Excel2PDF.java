@@ -57,8 +57,6 @@ public class Excel2PDF implements IExcel2PDF {
 
     private String fontPath;
 
-    private Map<String, Rectangle> annotationsRectMap;
-
     private Map<String, Cell> annotationsCellMap;
 
     public Excel2PDF(InputStream inputStream) throws IOException {
@@ -71,7 +69,6 @@ public class Excel2PDF implements IExcel2PDF {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
         this.pdfDocument = pdfDocument;
-        this.annotationsRectMap = new HashMap<>();
         this.annotationsCellMap = new HashMap<>();
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
@@ -82,7 +79,6 @@ public class Excel2PDF implements IExcel2PDF {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
         this.pdfDocument = pdfDocument;
-        this.annotationsRectMap = new HashMap<>();
         this.annotationsCellMap = new HashMap<>();
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
