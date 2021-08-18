@@ -24,6 +24,7 @@ import org.apache.poi.xssf.usermodel.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,10 +107,13 @@ public class Excel2PDF implements IExcel2PDF {
         XSSFDrawing dp = (XSSFDrawing) sheet.createDrawingPatriarch();
         if (dp != null) {
             List<XSSFShape> children = dp.getShapes();
+            XSSFPicture xssfPicture;
+            List<XSSFPicture> xssfPictures = new ArrayList<>();
             for (XSSFShape shape : children) {
-                XSSFPicture xssfPicture = (XSSFPicture) shape;
-                table.setNextRenderer(new OverlappingImageTableRenderer(table, xssfPicture, sheet));
+                xssfPicture = (XSSFPicture) shape;
+                xssfPictures.add(xssfPicture);
             }
+            table.setNextRenderer(new OverlappingImageTableRenderer(table, xssfPictures, sheet));
         }
     }
 
