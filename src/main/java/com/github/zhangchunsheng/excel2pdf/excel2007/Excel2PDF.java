@@ -36,6 +36,8 @@ public class Excel2PDF implements IExcel2PDF {
 
     private XSSFSheet sheet;
 
+    private PdfDocument pdfDocument;
+
     private Document document;
 
     private float rate;
@@ -54,6 +56,7 @@ public class Excel2PDF implements IExcel2PDF {
     public Excel2PDF(InputStream inputStream, OutputStream outputStream) throws IOException {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
+        this.pdfDocument = pdfDocument;
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
         this.lastCellNum = this.sheet.getRow(0).getLastCellNum();
@@ -62,6 +65,7 @@ public class Excel2PDF implements IExcel2PDF {
     public Excel2PDF(InputStream inputStream, OutputStream outputStream, String fontPath) throws IOException {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
+        this.pdfDocument = pdfDocument;
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
         this.lastCellNum = this.sheet.getRow(0).getLastCellNum();

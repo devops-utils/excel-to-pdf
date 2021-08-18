@@ -20,6 +20,10 @@ if(excel2PdfTool != null) {
 </dependency>
 ```
 
+```
+https://www.tutorialspoint.com/itext/itext_text_annotation.htm
+```
+
 <table border="0">
 	<tbody>
 		<tr>

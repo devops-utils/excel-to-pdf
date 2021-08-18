@@ -5,8 +5,12 @@ import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfString;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.annot.PdfAnnotation;
+import com.itextpdf.kernel.pdf.annot.PdfTextAnnotation;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
@@ -19,6 +23,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,6 +41,8 @@ public class Excel2PDF implements IExcel2PDF {
     private HSSFSheet sheet;
 
     private HSSFPalette customPalette;
+
+    private PdfDocument pdfDocument;
 
     private Document document;
 
@@ -56,6 +63,7 @@ public class Excel2PDF implements IExcel2PDF {
     public Excel2PDF(InputStream inputStream, OutputStream outputStream) throws IOException {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
+        this.pdfDocument = pdfDocument;
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
         this.lastCellNum = this.sheet.getRow(0).getLastCellNum();
@@ -64,6 +72,7 @@ public class Excel2PDF implements IExcel2PDF {
     public Excel2PDF(InputStream inputStream, OutputStream outputStream, String fontPath) throws IOException {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
+        this.pdfDocument = pdfDocument;
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
         this.lastCellNum = this.sheet.getRow(0).getLastCellNum();
@@ -80,6 +89,16 @@ public class Excel2PDF implements IExcel2PDF {
         doRowAndCell(table);
         doPicture(table);
         document.add(table);
+
+        Rectangle rect = new Rectangle(200, 200, 100, 60);
+        PdfAnnotation ann = new PdfTextAnnotation(rect);
+
+        ann.setColor(new DeviceRgb(255, 255, 255));
+        // Setting title to the annotation
+        ann.setTitle(new PdfString("Hello"));
+        ann.setContents("Hi welcome to Tutorialspoint.");
+        this.pdfDocument.getLastPage().addAnnotation(ann);
+
         document.close();
     }
 
