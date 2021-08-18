@@ -163,7 +163,7 @@ public class Excel2PDF implements IExcel2PDF {
                 //.setHeight(cell.getRow().getHeight() * this.rate * 1.2f)
                 .setHeight(cell.getRow().getHeightInPoints() * 1.2f)
                 .setPadding(0);
-        if(value.startsWith("${")) {
+        if (value.startsWith("${")) {
             pdfCell.setBorder(Border.NO_BORDER);
         } else {
             Text text = new Text(value);

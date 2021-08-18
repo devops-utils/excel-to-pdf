@@ -88,10 +88,10 @@ public class Excel2PDF implements IExcel2PDF {
      */
     private void doPicture(Table table) {
         XSSFDrawing dp = (XSSFDrawing) sheet.createDrawingPatriarch();
-        if(dp != null){
+        if (dp != null) {
             List<XSSFShape> children = dp.getShapes();
-            for (XSSFShape shape : children){
-                XSSFPicture xssfPicture = (XSSFPicture)shape;
+            for (XSSFShape shape : children) {
+                XSSFPicture xssfPicture = (XSSFPicture) shape;
                 table.setNextRenderer(new OverlappingImageTableRenderer(table, xssfPicture, sheet));
             }
         }
@@ -107,7 +107,7 @@ public class Excel2PDF implements IExcel2PDF {
         int lastRowNum = sheet.getLastRowNum() + 1;
         for (int i = 0; i < lastRowNum; i++) {
             XSSFRow row = sheet.getRow(i);
-            if(row == null) {
+            if (row == null) {
                 for (int j = 0; j < lastCellNum; j++) {
                     Cell pdfCell = new Cell();
                     pdfCell.setBorder(Border.NO_BORDER);
@@ -158,7 +158,7 @@ public class Excel2PDF implements IExcel2PDF {
                 //.setHeight(cell.getRow().getHeight() * this.rate * 1.2f)
                 .setHeight(cell.getRow().getHeightInPoints() * 1.2f)
                 .setPadding(0);
-        if(value.startsWith("${")) {
+        if (value.startsWith("${")) {
             pdfCell.setBorder(Border.NO_BORDER);
         } else {
             Text text = new Text(value);
@@ -179,7 +179,7 @@ public class Excel2PDF implements IExcel2PDF {
             XSSFColor xSSFColor = cellStyle.getFillForegroundXSSFColor();
             if (xSSFColor != null) {
                 byte[] rgb = xSSFColor.getRGBWithTint();
-                if(rgb != null) {
+                if (rgb != null) {
                     pdfCell.setBackgroundColor(new DeviceRgb(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2])));
                 }
             }
@@ -200,7 +200,7 @@ public class Excel2PDF implements IExcel2PDF {
         XSSFFont font = cellStyle.getFont();
         // short fontHeight = font.getFontHeight();
         short fontHeight = font.getFontHeightInPoints();
-        if(this.fontPath != null && !this.fontPath.equals("")) {
+        if (this.fontPath != null && !this.fontPath.equals("")) {
             text.setFont(PdfFontFactory.createFont(this.fontPath, PdfEncodings.IDENTITY_H));
         } else {
             text.setFont(PdfFontFactory.createFont(System.getProperty("user.dir") + "/doc/font/SimHei.TTF", PdfEncodings.IDENTITY_H));
@@ -213,7 +213,7 @@ public class Excel2PDF implements IExcel2PDF {
         XSSFColor xssfColor = font.getXSSFColor();
         if (xssfColor != null && xssfColor.getIndex() != 64) {
             byte[] rgb = xssfColor.getRGB();
-            if(rgb != null) {
+            if (rgb != null) {
                 text.setFontColor(new DeviceRgb(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2])));
             }
         }
