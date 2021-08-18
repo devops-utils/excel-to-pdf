@@ -9,10 +9,7 @@ import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfString;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.annot.PdfAnnotation;
-import com.itextpdf.kernel.pdf.annot.PdfLineAnnotation;
-import com.itextpdf.kernel.pdf.annot.PdfTextAnnotation;
-import com.itextpdf.kernel.pdf.annot.PdfTextMarkupAnnotation;
+import com.itextpdf.kernel.pdf.annot.*;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
@@ -99,12 +96,11 @@ public class Excel2PDF implements IExcel2PDF {
 
     private void doAnnotation() {
         Rectangle rect = new Rectangle(200, 200, 100, 60);
-        PdfTextAnnotation ann = new PdfTextAnnotation(rect);
+        PdfString pdfString = new PdfString("Hello");
+        PdfFreeTextAnnotation ann = new PdfFreeTextAnnotation(rect, pdfString);
 
-        ann.setColor(new DeviceRgb(255, 255, 255));
         // Setting title to the annotation
-        ann.setTitle(new PdfString("Hello"));
-        ann.setText(new PdfString("Hello"));
+        ann.setTitle(new PdfString("Peter Zhang"));
         this.pdfDocument.getLastPage().addAnnotation(ann);
     }
 
