@@ -106,7 +106,7 @@ public class Excel2PDF implements IExcel2PDF {
      * @throws IOException
      */
     private void doRowAndCell(Table table) throws IOException {
-        int lastRowNum = sheet.getLastRowNum();
+        int lastRowNum = sheet.getLastRowNum() + 1;
         for (int i = 0; i < lastRowNum; i++) {
             HSSFRow row = sheet.getRow(i);
             if(row == null) {
