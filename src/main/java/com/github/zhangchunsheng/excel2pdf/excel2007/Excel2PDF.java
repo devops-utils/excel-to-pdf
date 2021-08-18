@@ -108,29 +108,35 @@ public class Excel2PDF implements IExcel2PDF {
         for (int i = 0; i < lastRowNum; i++) {
             XSSFRow row = sheet.getRow(i);
             if(row == null) {
-                continue;
-            }
-            for (int j = 0; j < lastCellNum; j++) {
-                XSSFCell cell = row.getCell(j);
-                if (cell != null) {
-                    if (!isUse(cell)) {
-                        CellRangeAddress cellRangeAddress = getCellRangeAddress(cell);
-                        int rowspan = 1;
-                        int colspan = 1;
-                        if (cellRangeAddress != null) {
-                            colspan = cellRangeAddress.getLastColumn() - cellRangeAddress.getFirstColumn() + 1;
-                            rowspan = cellRangeAddress.getLastRow() - cellRangeAddress.getFirstRow() + 1;
-                            j = cellRangeAddress.getLastColumn();
-                        }
-                        Cell pdfCell = transformCommon(cell, rowspan, colspan);
-                        table.addCell(pdfCell);
-                    }
-                } else {
-                    // 补偿
+                for (int j = 0; j < lastCellNum; j++) {
                     Cell pdfCell = new Cell();
                     pdfCell.setBorder(Border.NO_BORDER);
 
                     table.addCell(pdfCell);
+                }
+            } else {
+                for (int j = 0; j < lastCellNum; j++) {
+                    XSSFCell cell = row.getCell(j);
+                    if (cell != null) {
+                        if (!isUse(cell)) {
+                            CellRangeAddress cellRangeAddress = getCellRangeAddress(cell);
+                            int rowspan = 1;
+                            int colspan = 1;
+                            if (cellRangeAddress != null) {
+                                colspan = cellRangeAddress.getLastColumn() - cellRangeAddress.getFirstColumn() + 1;
+                                rowspan = cellRangeAddress.getLastRow() - cellRangeAddress.getFirstRow() + 1;
+                                j = cellRangeAddress.getLastColumn();
+                            }
+                            Cell pdfCell = transformCommon(cell, rowspan, colspan);
+                            table.addCell(pdfCell);
+                        }
+                    } else {
+                        // 补偿
+                        Cell pdfCell = new Cell();
+                        pdfCell.setBorder(Border.NO_BORDER);
+
+                        table.addCell(pdfCell);
+                    }
                 }
             }
         }
