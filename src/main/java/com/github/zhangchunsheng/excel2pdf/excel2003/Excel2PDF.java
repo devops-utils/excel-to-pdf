@@ -10,7 +10,9 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfString;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.annot.PdfAnnotation;
+import com.itextpdf.kernel.pdf.annot.PdfLineAnnotation;
 import com.itextpdf.kernel.pdf.annot.PdfTextAnnotation;
+import com.itextpdf.kernel.pdf.annot.PdfTextMarkupAnnotation;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
@@ -90,16 +92,22 @@ public class Excel2PDF implements IExcel2PDF {
         doPicture(table);
         document.add(table);
 
+        this.doAnnotation();
+
+        document.close();
+    }
+
+    private void doAnnotation() {
         Rectangle rect = new Rectangle(200, 200, 100, 60);
         PdfAnnotation ann = new PdfTextAnnotation(rect);
+        float[] floatArray = new float[]{169, 790, 105, 790, 169, 800, 105, 800};
+        ann = PdfTextMarkupAnnotation.createHighLight(rect, floatArray);
 
         ann.setColor(new DeviceRgb(255, 255, 255));
         // Setting title to the annotation
         ann.setTitle(new PdfString("Hello"));
         ann.setContents("Hi welcome to Tutorialspoint.");
         this.pdfDocument.getLastPage().addAnnotation(ann);
-
-        document.close();
     }
 
     /**
