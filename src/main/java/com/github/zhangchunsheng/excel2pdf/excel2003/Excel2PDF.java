@@ -100,8 +100,6 @@ public class Excel2PDF implements IExcel2PDF {
     private void doAnnotation() {
         Rectangle rect = new Rectangle(200, 200, 100, 60);
         PdfAnnotation ann = new PdfTextAnnotation(rect);
-        float[] floatArray = new float[]{169, 790, 105, 790, 169, 800, 105, 800};
-        ann = PdfTextMarkupAnnotation.createHighLight(rect, floatArray);
 
         ann.setColor(new DeviceRgb(255, 255, 255));
         // Setting title to the annotation
