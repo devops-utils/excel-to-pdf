@@ -104,7 +104,7 @@ public class Excel2PDF implements IExcel2PDF {
         ann.setColor(new DeviceRgb(255, 255, 255));
         // Setting title to the annotation
         ann.setTitle(new PdfString("Hello"));
-        ann.setContents("Hi welcome to Tutorialspoint.");
+        ann.setText(new PdfString("Hello"));
         this.pdfDocument.getLastPage().addAnnotation(ann);
     }
 
