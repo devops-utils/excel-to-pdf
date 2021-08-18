@@ -106,6 +106,9 @@ public class Excel2PDF implements IExcel2PDF {
         int lastRowNum = sheet.getLastRowNum();
         for (int i = 0; i < lastRowNum; i++) {
             XSSFRow row = sheet.getRow(i);
+            if(row == null) {
+                continue;
+            }
             for (int j = 0; j < lastCellNum; j++) {
                 XSSFCell cell = row.getCell(j);
                 if (cell != null) {

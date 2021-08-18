@@ -108,6 +108,9 @@ public class Excel2PDF implements IExcel2PDF {
         int lastRowNum = sheet.getLastRowNum();
         for (int i = 0; i < lastRowNum; i++) {
             HSSFRow row = sheet.getRow(i);
+            if(row == null) {
+                continue;
+            }
             for (int j = 0; j < lastCellNum; j++) {
                 HSSFCell cell = row.getCell(j);
                 if (cell != null) {
