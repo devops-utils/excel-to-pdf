@@ -8,6 +8,7 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -126,7 +127,10 @@ public class Excel2PDF implements IExcel2PDF {
                     }
                 } else {
                     // 补偿
-                    table.addCell("");
+                    Cell pdfCell = new Cell();
+                    pdfCell.setBorder(Border.NO_BORDER);
+
+                    table.addCell(pdfCell);
                 }
             }
         }
