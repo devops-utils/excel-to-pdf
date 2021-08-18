@@ -161,7 +161,7 @@ public class Excel2PDF implements IExcel2PDF {
 
         Cell pdfCell = new Cell(rowspan, colspan)
                 .setHeight(cell.getRow().getHeight() * this.rate * 1.2f)
-                .setPadding(1);
+                .setPadding(0);
         Text text = new Text(value);
         setPdfCellFont(cell, text);
         Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
