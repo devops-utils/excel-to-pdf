@@ -23,7 +23,11 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import java.text.SimpleDateFormat;
 
 /**
- * @date 2021/8/17
+ * <pre>
+ * Created by Chunsheng Zhang on 2020/8/17.
+ * </pre>
+ *
+ * @author <a href="https://github.com/zhangchunsheng">Chunsheng Zhang</a>
  */
 public class Excel2PdfHelper {
 
