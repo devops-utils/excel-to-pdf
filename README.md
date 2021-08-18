@@ -16,7 +16,7 @@ if(excel2PdfTool != null) {
 <dependency>
     <groupId>com.github.zhangchunsheng</groupId>
     <artifactId>excel-to-pdf</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
