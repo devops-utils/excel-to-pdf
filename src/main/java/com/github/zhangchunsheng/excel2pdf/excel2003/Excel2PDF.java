@@ -99,13 +99,12 @@ public class Excel2PDF implements IExcel2PDF {
 
     private void doAnnotation() {
         Rectangle rect = new Rectangle(200, 200, 100, 60);
-        PdfAnnotation ann = new PdfTextAnnotation(rect);
+        PdfTextAnnotation ann = new PdfTextAnnotation(rect);
 
         ann.setColor(new DeviceRgb(255, 255, 255));
         // Setting title to the annotation
         ann.setTitle(new PdfString("Hello"));
         ann.setContents("Hi welcome to Tutorialspoint.");
-        ann.setModified();
         this.pdfDocument.getLastPage().addAnnotation(ann);
     }
 
