@@ -27,7 +27,10 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>
@@ -54,6 +57,10 @@ public class Excel2PDF implements IExcel2PDF {
 
     private String fontPath;
 
+    private Map<String, Rectangle> annotationsRectMap;
+
+    private Map<String, Cell> annotationsCellMap;
+
     public Excel2PDF(InputStream inputStream) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
         this.sheet = workbook.getSheetAt(0);
@@ -64,6 +71,8 @@ public class Excel2PDF implements IExcel2PDF {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
         this.pdfDocument = pdfDocument;
+        this.annotationsRectMap = new HashMap<>();
+        this.annotationsCellMap = new HashMap<>();
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
         this.lastCellNum = this.sheet.getRow(0).getLastCellNum();
@@ -73,6 +82,8 @@ public class Excel2PDF implements IExcel2PDF {
         this(inputStream);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
         this.pdfDocument = pdfDocument;
+        this.annotationsRectMap = new HashMap<>();
+        this.annotationsCellMap = new HashMap<>();
         this.document = new Document(pdfDocument, PageSize.A4.rotate());
         this.rate = getRate();
         this.lastCellNum = this.sheet.getRow(0).getLastCellNum();
@@ -88,25 +99,16 @@ public class Excel2PDF implements IExcel2PDF {
         Table table = new Table(getColumnWidths());
         doRowAndCell(table);
         doPicture(table);
+        doAnnotation(table);
         document.add(table);
-
-        this.doAnnotation(200, 200, "Hello");
-        this.doAnnotation(200, 400, "Hello");
 
         document.close();
     }
 
-    private void doAnnotation(float x, float y, String value) {
-        Rectangle rect = new Rectangle(x, y, 100, 20);
-        PdfString pdfString = new PdfString(value);
-        PdfFreeTextAnnotation ann = new PdfFreeTextAnnotation(rect, pdfString);
-
-        // Setting title to the annotation
-        ann.setTitle(new PdfString("Peter Zhang"));
-        // <</BBox [0 0 36.26521 18.95174 ] /Filter /FlateDecode /FormType 1 /Length 141 /Resources 197 0 R /Subtype /Form /Type /XObject >>
-        // ann.setDefaultAppearance(new PdfString("//Helvetica 12 Tf 0 g")); // PDFBox
-        ann.setDefaultAppearance(new PdfString("//Arial 20 Tf 0 g"));
-        this.pdfDocument.getLastPage().addAnnotation(ann);
+    private void doAnnotation(Table table) {
+        for (Map.Entry<String, Cell> entry : annotationsCellMap.entrySet()) {
+            table.setNextRenderer(new OverlappingAnnotationTableRenderer(table, entry.getKey(), entry.getValue(), pdfDocument));
+        }
     }
 
     /**
@@ -191,6 +193,7 @@ public class Excel2PDF implements IExcel2PDF {
                 .setPadding(0);
         if (value.startsWith("${")) {
             pdfCell.setBorder(Border.NO_BORDER);
+            annotationsCellMap.put(value, pdfCell);
         } else {
             Text text = new Text(value);
             setPdfCellFont(cell, text);
