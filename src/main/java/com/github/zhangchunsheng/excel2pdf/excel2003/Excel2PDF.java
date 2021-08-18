@@ -95,9 +95,9 @@ public class Excel2PDF implements IExcel2PDF {
         document.close();
     }
 
-    private void doAnnotation() {
-        Rectangle rect = new Rectangle(200, 200, 100, 20);
-        PdfString pdfString = new PdfString("Hello");
+    private void doAnnotation(float x, float y, String value) {
+        Rectangle rect = new Rectangle(x, y, 100, 20);
+        PdfString pdfString = new PdfString(value);
         PdfFreeTextAnnotation ann = new PdfFreeTextAnnotation(rect, pdfString);
 
         // Setting title to the annotation
