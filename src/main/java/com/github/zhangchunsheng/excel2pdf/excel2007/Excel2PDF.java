@@ -155,8 +155,9 @@ public class Excel2PDF implements IExcel2PDF {
         String value = Excel2PdfHelper.getValue(cell);
 
         Cell pdfCell = new Cell(rowspan, colspan)
-                .setHeight(cell.getRow().getHeight() * this.rate * 1.2f)
-                .setPadding(1);
+                //.setHeight(cell.getRow().getHeight() * this.rate * 1.2f)
+                .setHeight(cell.getRow().getHeightInPoints() * 1.2f)
+                .setPadding(0);
         Text text = new Text(value);
         setPdfCellFont(cell, text);
         Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
@@ -193,14 +194,16 @@ public class Excel2PDF implements IExcel2PDF {
         XSSFCellStyle cellStyle = cell.getCellStyle();
         //字体大小
         XSSFFont font = cellStyle.getFont();
-        short fontHeight = font.getFontHeight();
+        // short fontHeight = font.getFontHeight();
+        short fontHeight = font.getFontHeightInPoints();
         if(this.fontPath != null && !this.fontPath.equals("")) {
             text.setFont(PdfFontFactory.createFont(this.fontPath, PdfEncodings.IDENTITY_H));
         } else {
             text.setFont(PdfFontFactory.createFont(System.getProperty("user.dir") + "/doc/font/SimHei.TTF", PdfEncodings.IDENTITY_H));
         }
 
-        text.setFontSize(fontHeight * rate * 1.05f);
+        // text.setFontSize(fontHeight * rate * 1.05f);
+        text.setFontSize(fontHeight);
 
         //字体颜色
         XSSFColor xssfColor = font.getXSSFColor();
@@ -273,8 +276,9 @@ public class Excel2PDF implements IExcel2PDF {
     private float[] getColumnWidths() {
         float[] widths = new float[lastCellNum];
         for (int i = 0; i < lastCellNum; i++) {
-            int columnWidth = this.sheet.getColumnWidth(i);
-            float realWidth = columnWidth * rate;
+            // int columnWidth = this.sheet.getColumnWidth(i);
+            // float realWidth = columnWidth * rate;
+            float realWidth = this.sheet.getColumnWidthInPixels(i);
             widths[i] = realWidth;
         }
         return widths;
