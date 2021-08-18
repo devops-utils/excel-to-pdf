@@ -90,7 +90,8 @@ public class Excel2PDF implements IExcel2PDF {
         doPicture(table);
         document.add(table);
 
-        this.doAnnotation();
+        this.doAnnotation(200, 200, "Hello");
+        this.doAnnotation(200, 400, "Hello");
 
         document.close();
     }
