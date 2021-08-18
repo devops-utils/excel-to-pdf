@@ -7,6 +7,13 @@ import java.io.*;
 import java.net.URL;
 import java.util.UUID;
 
+/**
+ * <pre>
+ * Created by Chunsheng Zhang on 2020/8/17.
+ * </pre>
+ *
+ * @author <a href="https://github.com/zhangchunsheng">Chunsheng Zhang</a>
+ */
 public class Simple1Tests {
     @Test
     public void testCase1OfSingle() throws IOException {

@@ -36,6 +36,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <pre>
+ * Created by Chunsheng Zhang on 2020/8/17.
+ * </pre>
+ *
+ * @author <a href="https://github.com/zhangchunsheng">Chunsheng Zhang</a>
+ */
 public class Excel2PdfTool {
     private static final HashMap<String, String> FONT_MAP = new HashMap<>();
     private static final DataFormatter DATA_FORMATTER = new DataFormatter();
