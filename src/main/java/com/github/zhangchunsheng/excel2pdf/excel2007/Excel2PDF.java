@@ -159,7 +159,8 @@ public class Excel2PDF implements IExcel2PDF {
                 .setPadding(1);
         Text text = new Text(value);
         setPdfCellFont(cell, text);
-        pdfCell.add(new Paragraph(text).setPadding(0f).setMargin(0f));
+        Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
+        pdfCell.add(paragraph);
         XSSFCellStyle cellStyle = cell.getCellStyle();
         // 布局
         VerticalAlignment verticalAlignment = cellStyle.getVerticalAlignment();
@@ -171,8 +172,7 @@ public class Excel2PDF implements IExcel2PDF {
         Excel2PdfHelper.transformBorder(cell, pdfCell);
 
         //背景色
-        XSSFColor xSSFColor = cellStyle.getFillForegroundXSSFColor();
-
+        XSSFColor xSSFColor = cellStyle.getFillForegroundColorColor();
         if (xSSFColor != null) {
             byte[] rgb = xSSFColor.getRGB();
             if(rgb != null) {

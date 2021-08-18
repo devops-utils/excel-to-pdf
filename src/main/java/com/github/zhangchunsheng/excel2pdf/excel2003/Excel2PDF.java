@@ -164,7 +164,8 @@ public class Excel2PDF implements IExcel2PDF {
                 .setPadding(1);
         Text text = new Text(value);
         setPdfCellFont(cell, text);
-        pdfCell.add(new Paragraph(text).setPadding(0f).setMargin(0f));
+        Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
+        pdfCell.add(paragraph);
         HSSFCellStyle cellStyle = cell.getCellStyle();
         // 布局
         VerticalAlignment verticalAlignment = cellStyle.getVerticalAlignment();
