@@ -53,7 +53,7 @@ public class Simple1Tests {
     public void testEP() throws IOException {
         URL url = this.getClass().getResource("sample1/case1.xls");
         url = this.getClass().getResource("sample1/case5.xlsx");
-        url = this.getClass().getResource("sample1/case6.xls");
+        url = this.getClass().getResource("sample1/case6.xlsx");
 
         System.out.println(url.getPath());
 
