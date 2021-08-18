@@ -12,6 +12,8 @@ import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
+import java.util.List;
+
 /**
  * <pre>
  * Created by Chunsheng Zhang on 2020/8/17.
@@ -20,13 +22,13 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
  * @author <a href="https://github.com/zhangchunsheng">Chunsheng Zhang</a>
  */
 public class OverlappingImageTableRenderer extends TableRenderer {
-    private HSSFPicture picture;
+    private List<HSSFPicture> hSSFPictures;
 
     private HSSFSheet sheet;
 
-    public OverlappingImageTableRenderer(Table modelElement, HSSFPicture picture, HSSFSheet sheet) {
+    public OverlappingImageTableRenderer(Table modelElement, List<HSSFPicture> hSSFPictures, HSSFSheet sheet) {
         super(modelElement);
-        this.picture = picture;
+        this.hSSFPictures = hSSFPictures;
         this.sheet = sheet;
     }
 
@@ -34,15 +36,19 @@ public class OverlappingImageTableRenderer extends TableRenderer {
     public void drawChildren(DrawContext drawContext) {
         super.drawChildren(drawContext);
 
-        HSSFClientAnchor clientAnchor = picture.getClientAnchor();
-        // Use the coordinates of the cell in the fourth row and the second column to draw the image
-        CellRenderer cellRenderer1 = rows.get(clientAnchor.getRow1())[clientAnchor.getCol1()];
-        Rectangle rect1 = cellRenderer1.getOccupiedAreaBBox();
-        CellRenderer cellRenderer2 = rows.get(clientAnchor.getRow2())[clientAnchor.getCol2()];
-        Rectangle rect2 = cellRenderer2.getOccupiedAreaBBox();
+        HSSFPicture picture;
+        for(int i = 0 ; i < hSSFPictures.size() ; i++) {
+            picture = hSSFPictures.get(i);
 
-        float widthRate = (super.getOccupiedAreaBBox().getWidth() + rect2.getWidth()) / getExcelWidth(sheet);
-        float heightRate = (super.getOccupiedAreaBBox().getHeight() - rect2.getHeight()) / getExcelHeight(sheet);
+            HSSFClientAnchor clientAnchor = picture.getClientAnchor();
+            // Use the coordinates of the cell in the fourth row and the second column to draw the image
+            CellRenderer cellRenderer1 = rows.get(clientAnchor.getRow1())[clientAnchor.getCol1()];
+            Rectangle rect1 = cellRenderer1.getOccupiedAreaBBox();
+            CellRenderer cellRenderer2 = rows.get(clientAnchor.getRow2())[clientAnchor.getCol2()];
+            Rectangle rect2 = cellRenderer2.getOccupiedAreaBBox();
+
+            float widthRate = (super.getOccupiedAreaBBox().getWidth() + rect2.getWidth()) / getExcelWidth(sheet);
+            float heightRate = (super.getOccupiedAreaBBox().getHeight() - rect2.getHeight()) / getExcelHeight(sheet);
 
 
 //        float imgX1 = rect1.getLeft() + clientAnchor.getDx1() * widthRate;
@@ -53,22 +59,23 @@ public class OverlappingImageTableRenderer extends TableRenderer {
 //        float height = Math.abs(imgY2 - imgY1);
 //        float width = Math.abs(imgX2 - imgX1);
 
-        float width = 0f;
-        for (int i = clientAnchor.getCol1(); i < clientAnchor.getCol2(); i++) {
-            width += sheet.getColumnWidth(i);
-        }
-        width = Math.abs(width - clientAnchor.getDx1() + clientAnchor.getDx2()) * widthRate;
+            float width = 0f;
+            for (int j = clientAnchor.getCol1(); j < clientAnchor.getCol2(); j++) {
+                width += sheet.getColumnWidth(j);
+            }
+            width = Math.abs(width - clientAnchor.getDx1() + clientAnchor.getDx2()) * widthRate;
 
-        float height = 0f;
-        for (int i = clientAnchor.getRow1(); i < clientAnchor.getRow2(); i++) {
-            height += sheet.getRow(i).getHeight();
-        }
-        height = Math.abs(height - clientAnchor.getDy1() + clientAnchor.getDy2()) * heightRate;
+            float height = 0f;
+            for (int j = clientAnchor.getRow1(); j < clientAnchor.getRow2(); j++) {
+                height += sheet.getRow(j).getHeight();
+            }
+            height = Math.abs(height - clientAnchor.getDy1() + clientAnchor.getDy2()) * heightRate;
 
-        float x = rect1.getLeft() + clientAnchor.getDx1() * widthRate;
-        float y = rect1.getTop() - height - clientAnchor.getDy1() * heightRate;
-        ImageData imageData = ImageDataFactory.create(picture.getPictureData().getData());
-        drawContext.getCanvas().addImage(imageData, width, 0, 0, height, x, y);
+            float x = rect1.getLeft() + clientAnchor.getDx1() * widthRate;
+            float y = rect1.getTop() - height - clientAnchor.getDy1() * heightRate;
+            ImageData imageData = ImageDataFactory.create(picture.getPictureData().getData());
+            drawContext.getCanvas().addImage(imageData, width, 0, 0, height, x, y);
+        }
     }
 
     private float getExcelHeight(HSSFSheet sheet) {
@@ -91,6 +98,6 @@ public class OverlappingImageTableRenderer extends TableRenderer {
 
     @Override
     public IRenderer getNextRenderer() {
-        return new OverlappingImageTableRenderer((Table) modelElement, picture, sheet);
+        return new OverlappingImageTableRenderer((Table) modelElement, hSSFPictures, sheet);
     }
 }

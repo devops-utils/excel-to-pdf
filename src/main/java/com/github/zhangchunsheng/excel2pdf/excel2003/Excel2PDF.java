@@ -112,13 +112,17 @@ public class Excel2PDF implements IExcel2PDF {
      */
     private void doPicture(Table table) {
         HSSFPatriarch drawingPatriarch = sheet.getDrawingPatriarch();
-        if(drawingPatriarch != null){
+        if(drawingPatriarch != null) {
             List<HSSFShape> children = drawingPatriarch.getChildren();
+            List<HSSFPicture> hSSFPictures = new ArrayList<>();
+            HSSFPicture hssfPicture;
             for (HSSFShape shape : children){
-                HSSFPicture hssfPicture = (HSSFPicture)shape;
-                table.setNextRenderer(new OverlappingImageTableRenderer(table, hssfPicture, sheet));
+                hssfPicture = (HSSFPicture)shape;
+                hSSFPictures.add(hssfPicture);
             }
+            table.setNextRenderer(new OverlappingImageTableRenderer(table, hSSFPictures, sheet));
         }
+
     }
 
     /**
