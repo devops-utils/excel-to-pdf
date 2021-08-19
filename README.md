@@ -2,7 +2,7 @@
 excel-to-pdf
 
 ```
-An easy way to convert Excel to PDF by Java code based on Apache POI and itext7
+An easy way to convert Excel 2003 and Excel 2007 to PDF by Java code based on Apache POI and itext7
 ```
 
 ### 使用SDK
