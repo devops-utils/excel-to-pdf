@@ -212,7 +212,19 @@ public class Excel2PDF implements IExcel2PDF {
             HSSFColor color = this.customPalette.getColor(colorIndex);
             if (color.getIndex() != 64) {
                 short[] triplet = color.getTriplet();
-                DeviceRgb deviceRgb = new DeviceRgb(triplet[0] + 32, triplet[1] + 90, triplet[2] + 60);
+                int r = triplet[0] + 32;
+                int g = triplet[1] + 90;
+                int b = triplet[2] + 60;
+                if(r > 255) {
+                    r = 255;
+                }
+                if(g > 255) {
+                    g = 255;
+                }
+                if(b > 255) {
+                    b = 255;
+                }
+                DeviceRgb deviceRgb = new DeviceRgb(r, g, b);
                 pdfCell.setBackgroundColor(deviceRgb);
             }
         }
