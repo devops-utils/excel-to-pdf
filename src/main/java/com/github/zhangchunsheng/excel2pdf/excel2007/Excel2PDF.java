@@ -54,6 +54,8 @@ public class Excel2PDF implements IExcel2PDF {
 
     private Map<String, Cell> annotationsCellMap;
 
+    private float[] columnWidths;
+
     public Excel2PDF(InputStream inputStream) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
         this.sheet = workbook.getSheetAt(0);
@@ -86,7 +88,8 @@ public class Excel2PDF implements IExcel2PDF {
      * @throws IOException
      */
     public void convert() throws IOException {
-        Table table = new Table(getColumnWidths());
+        this.columnWidths = this.getColumnWidths();
+        Table table = new Table(columnWidths);
         doRowAndCell(table);
         doPicture(table);
         doAnnotation(table);
@@ -135,19 +138,28 @@ public class Excel2PDF implements IExcel2PDF {
                     table.addCell(pdfCell);
                 }
             } else {
+                int rowspan;
+                int colspan;
+                float maxWidth;
                 for (int j = 0; j < lastCellNum; j++) {
                     XSSFCell cell = row.getCell(j);
                     if (cell != null) {
                         if (!isUse(cell)) {
                             CellRangeAddress cellRangeAddress = getCellRangeAddress(cell);
-                            int rowspan = 1;
-                            int colspan = 1;
+                            rowspan = 1;
+                            colspan = 1;
+                            maxWidth = 0;
                             if (cellRangeAddress != null) {
                                 colspan = cellRangeAddress.getLastColumn() - cellRangeAddress.getFirstColumn() + 1;
                                 rowspan = cellRangeAddress.getLastRow() - cellRangeAddress.getFirstRow() + 1;
                                 j = cellRangeAddress.getLastColumn();
+                                for(int k = cellRangeAddress.getFirstColumn() ; k < cellRangeAddress.getLastColumn() ; k++) {
+                                    maxWidth += this.columnWidths[k];
+                                }
+                            } else {
+                                maxWidth = this.columnWidths[j];
                             }
-                            Cell pdfCell = transformCommon(cell, rowspan, colspan);
+                            Cell pdfCell = transformCommon(cell, rowspan, colspan, maxWidth);
                             table.addCell(pdfCell);
                         }
                     } else {
@@ -171,7 +183,7 @@ public class Excel2PDF implements IExcel2PDF {
      * @return
      * @throws IOException
      */
-    private Cell transformCommon(XSSFCell cell, int rowspan, int colspan) throws IOException {
+    private Cell transformCommon(XSSFCell cell, int rowspan, int colspan, float maxWidth) throws IOException {
         String value = Excel2PdfHelper.getValue(cell);
 
         Cell pdfCell = new Cell(rowspan, colspan)
@@ -184,9 +196,13 @@ public class Excel2PDF implements IExcel2PDF {
         } else {
             Text text = new Text(value);
             setPdfCellFont(cell, text);
-            Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
-            pdfCell.add(paragraph);
             XSSFCellStyle cellStyle = cell.getCellStyle();
+            Paragraph paragraph = new Paragraph(text).setPadding(0f).setMargin(0f);
+            if(cellStyle.getWrapText()) {
+                paragraph.setMaxWidth(maxWidth);
+            }
+
+            pdfCell.add(paragraph);
             // 布局
             VerticalAlignment verticalAlignment = cellStyle.getVerticalAlignment();
             pdfCell.setVerticalAlignment(Excel2PdfHelper.getVerticalAlignment(verticalAlignment));
