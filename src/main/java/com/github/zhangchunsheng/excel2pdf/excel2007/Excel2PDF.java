@@ -127,6 +127,9 @@ public class Excel2PDF implements IExcel2PDF {
      */
     private void doRowAndCell(Table table) throws IOException {
         int lastRowNum = sheet.getLastRowNum() + 1;
+        int rowspan;
+        int colspan;
+        float maxWidth;
         for (int i = 0; i < lastRowNum; i++) {
             XSSFRow row = sheet.getRow(i);
             if (row == null) {
@@ -137,9 +140,6 @@ public class Excel2PDF implements IExcel2PDF {
                     table.addCell(pdfCell);
                 }
             } else {
-                int rowspan;
-                int colspan;
-                float maxWidth;
                 for (int j = 0; j < lastCellNum; j++) {
                     XSSFCell cell = row.getCell(j);
                     if (cell != null) {
