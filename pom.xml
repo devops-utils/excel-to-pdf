@@ -7,7 +7,7 @@
     <artifactId>excel-to-pdf</artifactId>
     <name>excel-to-pdf</name>
     <packaging>jar</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>An easy way to convert Excel to PDF by Java code based on Apache POI and itext7</description>
     <url>https://github.com/devops-utils/excel-to-pdf</url>
 
